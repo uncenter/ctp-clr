@@ -7,6 +7,9 @@ whiskers:
 ---
 {
 {%- for _, color in flavor.colors %}
-    "{{ color.name }}": "#{{ color.hex }}"{% if not loop.last %},{% endif %}
+    "{{ color.name }}": {
+        "hex": "#{{ color.hex }}",
+        "order": {{ color.order }}
+    }{% if not loop.last %},{% endif %}
 {%- endfor %}
 }

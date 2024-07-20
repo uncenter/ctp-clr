@@ -1,6 +1,13 @@
 import Foundation
 import AppKit
 
+struct ColorProperties: Decodable {
+    let hex: String
+    let order: Int
+}
+
+typealias ColorList = [String: ColorProperties]
+
 func hex2rgba(_ color: String) -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
     var hexColor = color
     if hexColor.hasPrefix("#") {
@@ -28,15 +35,20 @@ func hex2rgba(_ color: String) -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloa
 func convertJSONToCLR(inputFilePath: String, outputFilePath: String) {
     let url = URL(fileURLWithPath: inputFilePath)
     guard let data = try? Data(contentsOf: url),
-          let colorList = try? JSONDecoder().decode([String: String].self, from: data) else {
+          let colorList = try? JSONDecoder().decode(ColorList.self, from: data) else {
         print("Failed to read or parse JSON file.")
         return
+    }
+
+    let sortedColors = colorList.sorted { (lhs, rhs) -> Bool in
+        return lhs.value.order < rhs.value.order
     }
 
     let paletteName = url.deletingPathExtension().lastPathComponent
     let nsColorList = NSColorList(name: paletteName)
 
-    for (name, hex) in colorList {
+    for (name, properties) in sortedColors {
+        let hex = properties.hex
         let color = hex2rgba(hex)
         nsColorList.setColor(NSColor(calibratedRed: color.r, green: color.g, blue: color.b, alpha: color.a), forKey: name)
     }

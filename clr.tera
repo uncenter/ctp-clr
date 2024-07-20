@@ -1,0 +1,12 @@
+---
+whiskers:
+  version: 2.4.0
+  matrix:
+    - flavor
+  filename: "dist/Catppuccin {{ flavor.name }}.json"
+---
+{
+{%- for _, color in flavor.colors %}
+    "{{ color.name }}": "#{{ color.hex }}"{% if not loop.last %},{% endif %}
+{%- endfor %}
+}

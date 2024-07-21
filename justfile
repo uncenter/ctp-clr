@@ -5,5 +5,5 @@ build:
   #!/usr/bin/env bash
   whiskers clr.tera
   find dist/*.json | while read -r file; do
-    swift ./json-to-clr.swift "$file" "dist/$(basename -s .json "$file").clr"
+    swift ./json-to-clr.swift "$file" "themes/$(basename -s .json "$file").clr"
   done
